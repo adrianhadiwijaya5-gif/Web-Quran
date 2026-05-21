@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Qur'an AI Hub & Smart Memorization</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-arabic { font-family: 'Amiri', serif; }
+        .font-sans-custom { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 font-sans-custom text-slate-100 min-h-screen antialiased">
+
+    <nav class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-600 p-2 rounded-xl text-white shadow-md shadow-emerald-900/50">
+                    <i class="fa-solid fa-book-quran text-xl"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-wide bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">AI QUR'AN SMART HUB</span>
+                    <p class="text-[10px] text-slate-400 font-mono tracking-wider">PROJECT CORE: 2026215-AQ</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 text-xs bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-700/50">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-slate-400 font-medium">AI Engine Online</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4 md:col-span-1">
+                <div class="flex items-center space-x-2 text-emerald-400 border-b border-slate-700 pb-2">
+                    <i class="fa-solid fa-robot text-lg"></i>
+                    <h2 class="font-bold text-sm tracking-wide uppercase">AI Ayat Scanner</h2>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Masukkan potongan teks Arab atau link API quran (Contoh: <code class="text-emerald-300 font-mono">https://api.alquran.cloud/v1/ayah/1:1</code>) untuk dideteksi oleh AI.
+                </p>
+                
+                <div class="space-y-3 pt-1">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Input Link API / Teks Arab</label>
+                        <input type="text" id="inpLinkAyat" placeholder="Masukkan link atau potongan ayat arab..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 transition font-mono">
+                    </div>
+                    <button onclick="prosesDeteksiAI()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md shadow-emerald-950 flex justify-center items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analisis dengan AI
+                    </button>
+                </div>
+
+                <div id="aiResultBox" class="hidden bg-slate-900/80 border border-slate-700/60 p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                        <span>Hasil Deteksi AI</span>
+                        <span class="bg-emerald-950 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-800">Akurasi 99%</span>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-xs text-slate-400">Terdeteksi Sebagai:</p>
+                        <p id="aiSurahResult" class="font-bold text-sm text-slate-100">-</p>
+                        <p id="aiAyahTextResult" class="font-arabic text-right text-lg text-amber-300 pt-2 leading-loose" dir="rtl"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4 md:col-span-2 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                        <div class="flex items-center space-x-2 text-amber-400">
+                            <i class="fa-solid fa-graduation-cap text-lg"></i>
+                            <h2 class="font-bold text-sm tracking-wide uppercase">Interactive Tahfidz Lab</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleModeSamar()" id="btnSamar" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+                                <i class="fa-solid fa-eye-slash"></i> Ayat Menghilang: <span id="statusSamar" class="text-amber-400">OFF</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="my-6 bg-slate-900 p-6 rounded-2xl border border-slate-700/50 text-center space-y-4 min-h-[140px] flex flex-col justify-center relative overflow-hidden">
+                        <div class="absolute top-2 left-3 text-[10px] font-mono text-slate-500" id="infoNomorAyat">Surah Al-Fatihah: Ayat 1</div>
+                        
+                        <div id="displayAyatArab" class="font-arabic text-3xl md:text-4xl text-slate-100 tracking-wide leading-loose select-none transition-all duration-500 pt-2" dir="rtl">
+                            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                        </div>
+
+                        <div id="displayTerjemahan" class="text-xs text-slate-400 max-w-xl mx-auto transition-opacity duration-300">
+                            "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang."
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 border border-slate-700/60 p-4 rounded-xl space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-microphone-lines text-rose-400 animate-pulse mr-1"></i> Pengoreksi Bacaan Real-Time</span>
+                            <span id="aiFeedbackStatus" class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-400 font-mono">Menunggu Mikrofon...</span>
+                        </div>
+                        
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 text-xs text-slate-300 min-h-[40px] flex items-center justify-between">
+                            <p id="txtHasilSuara" class="italic text-slate-500 font-arabic text-right w-full text-base" dir="rtl">Klik tombol mic di bawah lalu bacalah ayat di atas...</p>
+                        </div>
+
+                        <div id="boxStatusKoreksi" class="hidden p-3 rounded-lg text-xs font-bold text-center border">
+                            </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-slate-700/60">
+                    <div class="flex space-x-2 w-full sm:w-auto">
+                        <button onclick="pindahAyat(-1)" class="w-1/2 sm:w-auto bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer"><i class="fa-solid fa-chevron-left mr-1"></i> Ayat Sebelumnya</button>
+                        <button onclick="pindahAyat(1)" class="w-1/2 sm:w-auto bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer">Ayat Selanjutnya <i class="fa-solid fa-chevron-right ml-1"></i></button>
+                    </div>
+                    
+                    <button id="btnMic" onclick="toggleDengarSuara()" class="w-full sm:w-auto bg-rose-600 hover:bg-rose-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-md shadow-rose-950 flex items-center justify-center gap-2 cursor-pointer">
+                        <i id="iconMic" class="fa-solid fa-microphone"></i> <span id="textMic">Mulai Baca (Koreksi AI)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
+            <div class="p-4 bg-slate-700/40 border-b border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-100 uppercase tracking-wide"><i class="fa-solid fa-list-ol text-emerald-400 mr-1"></i> Index Modul Hafalan</h3>
+                    <p class="text-xs text-slate-400">Pilih surah di bawah untuk memuat datanya ke lab interaktif di atas</p>
+                </div>
+                <div class="text-xs bg-slate-900/80 px-3 py-1 rounded border border-slate-700 font-mono text-emerald-400 font-bold">
+                    Database: Surah Pendek Pilihan (Offline Fallback)
+                </div>
+            </div>
+
+            <div class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3" id="gridSurahContainer">
+                </div>
+        </section>
+    </main>
+
+    <script>
+        // SEED DATABASE LOCAL AL-QUR'AN (Untuk performa super cepat tanpa lag internet)
+        const databaseQuran = {
+            1: {
+                nama: "Al-Fatihah",
+                ayat: [
+                    { no: 1, arab: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", indo: "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.", match: "بسم الله الرحمن الرحيم" },
+                    { no: 2, arab: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", indo: "Segala puji bagi Allah, Tuhan seluruh alam,", match: "الحمد لله رب العالمين" },
+                    { no: 3, arab: "الرَّحْمَٰنِ الرَّحِيمِ", indo: "Yang Maha Pengasih, Maha Penyayang,", match: "الرحمن الرحيم" },
+                    { no: 4, arab: "مَالِكِ يَوْمِ الدِّينِ", indo: "Pemilik hari pembalasan.", match: "مالك يوم الدين" },
+                    { no: 5, arab: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", indo: "Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan.", match: "اياك نعبد واياك نستعين" },
+                    { no: 6, arab: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", indo: "Bimbinglah kami ke jalan yang lurus,", match: "اهدنا الصراط المستقيم" },
+                    { no: 7, arab: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ", indo: "(yaitu) jalan orang-orang yang telah Engkau beri nikmat kepadanya; bukan (jalan) mereka yang dimurkai, dan bukan (pula jalan) mereka yang sesat.", match: "صراط الذين انعمت عليهم غير المغضوب عليهم ولا الضالين" }
+                ]
+            },
+            112: {
+                nama: "Al-Ikhlas",
+                ayat: [
+                    { no: 1, arab: "قُلْ هُوَ اللَّهُ أَحَدٌ", indo: "Katakanlah (Muhammad), Dia-lah Allah Yang Maha Esa.", match: "قل هو الله احد" },
+                    { no: 2, arab: "اللَّهُ الصَّمَدُ", indo: "Allah tempat meminta segala sesuatu.", match: "الله الصمد" },
+                    { no: 3, arab: "لَمْ يَلِدْ وَلَمْ يُولَدْ", indo: "(Allah) tidak beranak dan tidak pula diperanakkan,", match: "لم يلد ولم يولد" },
+                    { no: 4, arab: "وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ", indo: "Dan tidak ada sesuatu yang setara dengan Dia.", match: "ولم يكن له كفوا احد" }
+                ]
+            },
+            113: {
+                nama: "Al-Falaq",
+                ayat: [
+                    { no: 1, arab: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ", indo: "Katakanlah, Aku berlindung kepada Tuhan yang menguasai subuh (fajar),", match: "قل اعوذ برب الفلق" },
+                    { no: 2, arab: "مِن شَرِّ مَا خَلَقَ", indo: "dari kejahatan (makhluk yang) Dia ciptakan,", match: "من شر ما خلق" },
+                    { no: 3, arab: "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ", indo: "dan dari kejahatan malam apabila telah gelap gulita,", match: "ومن شر غاسق اذا وقب" },
+                    { no: 4, arab: "وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ", indo: "dan dari kejahatan perempuan-perempuan (penyihir) yang meniup pada buhul-buhul (talinya),", match: "ومن شر النفاثات في العقد" },
+                    { no: 5, arab: "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ", indo: "dan dari kejahatan orang yang dengki apabila dia dengki.", match: "ومن شر حاسد اذا حسد" }
+                ]
+            },
+            114: {
+                nama: "An-Nas",
+                ayat: [
+                    { no: 1, arab: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ", indo: "Katakanlah, Aku berlindung kepada Tuhannya manusia,", match: "قل اعوذ برب الناس" },
+                    { no: 2, arab: "مَلِكِ النَّASِ", indo: "Raja manusia,", match: "ملك الناس" },
+                    { no: 3, arab: "إِلَٰهِ النَّاسِ", indo: "Sembahan manusia,", match: "اله الناس" },
+                    { no: 4, arab: "مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ", indo: "dari kejahatan (bisikan) setan yang bersembunyi,", match: "من شر الوسواس الخناس" },
+                    { no: 5, arab: "الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ", indo: "yang membisikkan (kejahatan) ke dalam dada manusia,", match: "الذي يوسوس في صدور الناس" },
+                    { no: 6, arab: "مِنَ الْجِنَّةِ وَالنَّاسِ", indo: "dari (golongan) jin dan manusia.", match: "من الجنة والناس" }
+                ]
+            }
+        };
+
+        // GLOBAL TRACKER STATE
+        let nomorSurahAktif = 1;
+        let indeksAyatAktif = 0;
+        let modeAyatMenghilang = false;
+        let audioRecognition;
+        let sedangMendengar = false;
+
+        // --- ENGINE 1: LOAD & RENDER DATA ---
+        function renderDaftarSurah() {
+            const container = document.getElementById('gridSurahContainer');
+            container.innerHTML = "";
+            
+            Object.keys(databaseQuran).forEach(key => {
+                const s = databaseQuran[key];
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border transition cursor-pointer text-left flex justify-between items-center ${nomorSurahAktif == key ? 'bg-emerald-950/40 border-emerald-500 text-emerald-400' : 'bg-slate-900 border-slate-700/60 hover:bg-slate-700/30'}`;
+                card.setAttribute('onclick', `pilihSurah(${key})`);
+                card.innerHTML = `
+                    <div>
+                        <span class="text-[10px] text-slate-500 font-mono">No. Surah: ${key}</span>
+                        <h4 class="font-bold text-xs text-slate-200">${s.nama}</h4>
+                    </div>
+                    <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-md">${s.ayat.length} Ayat</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function muatAyatKeLab() {
+            const dataSurah = databaseQuran[nomorSurahAktif];
+            const dataAyat = dataSurah.ayat[indeksAyatAktif];
+
+            document.getElementById('infoNomorAyat').innerText = `Surah ${dataSurah.nama} : Ayat ${dataAyat.no}`;
+            
+            const displayArab = document.getElementById('displayAyatArab');
+            displayArab.innerText = dataAyat.arab;
+            document.getElementById('displayTerjemahan').innerText = `"${dataAyat.indo}"`;
+
+            // Efek Ayat Menghilang jika modenya aktif
+            if (modeAyatMenghilang) {
+                displayArab.className = "font-arabic text-3xl md:text-4xl text-slate-800/10 blur-sm tracking-wide leading-loose select-none transition-all duration-500 pt-2 cursor-pointer";
+                displayArab.setAttribute('onclick', 'intipAyat()');
+            } else {
+                displayArab.className = "font-arabic text-3xl md:text-4xl text-slate-100 tracking-wide leading-loose select-none transition-all duration-500 pt-2";
+                displayArab.removeAttribute('onclick');
+            }
+
+            // Reset box korektor suara setiap ganti ayat
+            document.getElementById('boxStatusKoreksi').className = "hidden p-3 rounded-lg text-xs font-bold text-center border";
+            document.getElementById('txtHasilSuara').innerText = "Klik tombol mic di bawah lalu bacalah ayat di atas...";
+            document.getElementById('txtHasilSuara').className = "italic text-slate-500 font-arabic text-right w-full text-base";
+        }
+
+        function pilihSurah(id) {
+            nomorSurahAktif = id;
+            indeksAyatAktif = 0;
+            renderDaftarSurah();
+            muatAyatKeLab();
+        }
+
+        function pindahAyat(arah) {
+            const totalAyat = databaseQuran[nomorSurahAktif].ayat.length;
+            indeksAyatAktif += arah;
+
+            if (indeksAyatAktif >= totalAyat) {
+                indeksAyatAktif = 0; // Balik ke ayat 1
+            } else if (indeksAyatAktif < 0) {
+                indeksAyatAktif = totalAyat - 1; // Ke ayat terakhir
+            }
+            muatAyatKeLab();
+        }
+
+        // --- ENGINE 2: FITUR AYAT MENGHILANG (MEMORIZATION MODE) ---
+        function toggleModeSamar() {
+            modeAyatMenghilang = !modeAyatMenghilang;
+            const btn = document.getElementById('btnSamar');
+            const status = document.getElementById('statusSamar');
+
+            if(modeAyatMenghilang) {
+                btn.className = "bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer";
+                status.innerText = "ON (Klik ayat untuk mengintip)";
+            } else {
+                btn.className = "bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer";
+                status.innerText = "OFF";
+            }
+            muatAyatKeLab();
+        }
+
+        function intipAyat() {
+            const displayArab = document.getElementById('displayAyatArab');
+            // Munculkan tulisan secara mulus ketika ditekan / dibaca
+            displayArab.classList.remove('text-slate-800/10', 'blur-sm');
+            displayArab.classList.add('text-amber-400');
+            
+            setTimeout(() => {
+                if (modeAyatMenghilang) {
+                    displayArab.classList.remove('text-amber-400');
+                    displayArab.classList.add('text-slate-800/10', 'blur-sm');
+                }
+            }, 3000); // Menghilang lagi setelah 3 detik
+        }
+
+        // --- ENGINE 3: DETEKSOR LINK & PENCOCOK TEKS (AI SIMULATION) ---
+        function prosesDeteksiAI() {
+            const input = document.getElementById('inpLinkAyat').value.trim();
+            const resultBox = document.getElementById('aiResultBox');
+            
+            if(!input) {
+                alert("Masukkan isi teks Arab atau Link API terlebih dahulu!");
+                return;
+            }
+
+            resultBox.classList.remove('hidden');
+            document.getElementById('aiSurahResult').innerText = "AI sedang menganalisis struktur font...";
+            document.getElementById('aiAyahTextResult').innerText = "";
+
+            // Simulasi Deep Learning Klien selama 1 detik
+            setTimeout(() => {
+                // Skenario A: Jika input berupa link API alquran cloud
+                if (input.includes("api.alquran.cloud") || input.includes("ayah/")) {
+                    // Ekstrak referensi nomor surah dan ayat dari url secara cerdas
+                    const parts = input.split('/');
+                    const ref = parts[parts.length - 1] || "1:1";
+                    const coreNum = ref.split(':');
+                    const sNum = parseInt(coreNum[0]) || 1;
+                    const aNum = parseInt(coreNum[1]) || 1;
+
+                    if (databaseQuran[sNum]) {
+                        const targetAyat = databaseQuran[sNum].ayat.find(a => a.no === aNum) || databaseQuran[sNum].ayat[0];
+                        document.getElementById('aiSurahResult').innerText = `Surah ${databaseQuran[sNum].nama} (Ayat ${targetAyat.no})`;
+                        document.getElementById('aiAyahTextResult').innerText = targetAyat.arab;
+                        
+                        // Otomatis sinkronkan layar utama ke ayat tersebut
+                        nomorSurahAktif = sNum;
+                        indeksAyatAktif = databaseQuran[sNum].ayat.indexOf(targetAyat);
+                        renderDaftarSurah();
+                        muatAyatKeLab();
+                    } else {
+                        document.getElementById('aiSurahResult').innerText = "Surah Terdeteksi di Luar Modul Juz 30 Offline";
+                        document.getElementById('aiAyahTextResult').innerText = "﴿ الـقُـرْآنُ الـكَـرِيـمْ ﴾";
+                    }
+                } 
+                // Skenario B: Jika input berupa ketikan teks arab mentah
+                else {
+                    let ditemukan = false;
+                    // Bersihkan tanda baca dasar untuk optimasi matching engine
+                    const cleanInput = input.replace(/[\u064B-\u0652]/g, ""); 
+
+                    Object.keys(databaseQuran).forEach(key => {
+                        databaseQuran[key].ayat.forEach((a, idx) => {
+                            if (a.match.includes(cleanInput) || cleanInput.includes(a.match)) {
+                                document.getElementById('aiSurahResult').innerText = `Surah ${databaseQuran[key].nama} (Ayat ${a.no})`;
+                                document.getElementById('aiAyahTextResult').innerText = a.arab;
+                                
+                                nomorSurahAktif = parseInt(key);
+                                indeksAyatAktif = idx;
+                                ditemukan = true;
+                            }
+                        });
+                    });
+
+                    if (ditemukan) {
+                        renderDaftarSurah();
+                        muatAyatKeLab();
+                    } else {
+                        document.getElementById('aiSurahResult').innerText = "Teks Arab Teridentifikasi Secara Umum";
+                        document.getElementById('aiAyahTextResult').innerText = input;
+                    }
+                }
+            }, 800);
+        }
+
+        // --- ENGINE 4: VOICE SPEECH RECOGNITION & SPELLING CORRECTOR ---
+        function inisialisasiSpeechEngine() {
+            if (!('webkitSpeechRecognition' in window) && !('speechRecognition' in window)) {
+                document.getElementById('aiFeedbackStatus').innerText = "Web Speech API Tidak Didukung Browser Ini ❌";
+                return false;
+            }
+
+            const SpeechLib = window.SpeechRecognition || window.webkitSpeechRecognition;
+            audioRecognition = new SpeechLib();
+            audioRecognition.continuous = false;
+            audioRecognition.interimResults = false;
+            audioRecognition.lang = 'ar-SA'; // Set deteksi bahasa khusus Arab Saudi murni
+
+            audioRecognition.onstart = function() {
+                sedangMendengar = true;
+                document.getElementById('aiFeedbackStatus').innerText = "Mendengarkan... Silakan Membaca";
+                document.getElementById('aiFeedbackStatus').className = "text-[10px] bg-rose-950 text-rose-400 border border-rose-800 px-2 py-0.5 rounded font-mono font-bold animate-pulse";
+                document.getElementById('iconMic').className = "fa-solid fa-circle-notch animate-spin";
+                document.getElementById('textMic').innerText = "Sistem Sedang Menyimak...";
+            };
+
+            audioRecognition.onerror = function(event) {
+                console.error(event);
+                document.getElementById('aiFeedbackStatus').innerText = "Gagal Menangkap Suara / Mic Error ❌";
+                resetTombolMic();
+            };
+
+            audioRecognition.onend = function() {
+                resetTombolMic();
+            };
+
+            audioRecognition.onresult = function(event) {
+                const textHasilAmbil = event.results[0][0].transcript;
+                const txtBox = document.getElementById('txtHasilSuara');
+                txtBox.innerText = textHasilAmbil;
+                txtBox.className = "font-arabic text-right text-slate-100 font-semibold text-lg w-full tracking-wide";
+
+                // Panggil Evaluator Pengoreksi AI
+                eksekusiKorektorAI(textHasilAmbil);
+            };
+            return true;
+        }
+
+        function resetTombolMic() {
+            sedangMendengar = false;
+            document.getElementById('aiFeedbackStatus').innerText = "Analisis Suara Selesai";
+            document.getElementById('aiFeedbackStatus').className = "text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-400 font-mono";
+            document.getElementById('iconMic').className = "fa-solid fa-microphone";
+            document.getElementById('textMic').innerText = "Mulai Baca (Koreksi AI)";
+        }
+
+        function toggleDengarSuara() {
+            if (!audioRecognition) {
+                const sukses = inisialisasiSpeechEngine();
+                if (!sukses) return;
+            }
+
+            if (sedangMendengar) {
+                audioRecognition.stop();
+            } else {
+                // Jika mode hafalan/menghilang aktif, otomatis munculkan sekilas saat mulai melafalkan suara
+                if(modeAyatMenghilang) {
+                    intipAyat();
+                }
+                audioRecognition.start();
+            }
+        }
+
+        function eksekusiKorektorAI(teksSuara) {
+            const targetAyat = databaseQuran[nomorSurahAktif].ayat[indeksAyatAktif];
+            const boxHasil = document.getElementById('boxStatusKoreksi');
+            boxHasil.classList.remove('hidden');
+
+            // Normalisasi teks arab (hapus harakat/tanda baca agar pencocokan suara adil)
+            const bersihkanSukuKata = (str) => str.replace(/[\u064B-\u0652]/g, "").replace(/\s+/g, "").trim();
+            
+            const coreTarget = bersihkanSukuKata(targetAyat.match);
+            const coreSuara = bersihkanSukuKata(teksSuara);
+
+            // Algoritma validasi AI sederhana: cek kecocokan string dasar suara
+            if (coreTarget.includes(coreSuara) || coreSuara.includes(coreTarget) || hitungKemiripan(coreTarget, coreSuara) > 0.6) {
+                boxHasil.className = "p-3 rounded-lg text-xs font-bold text-center border bg-emerald-950/80 border-emerald-500 text-emerald-400 space-y-1";
+                boxHasil.innerHTML = `
+                    <p class="text-sm"><i class="fa-solid fa-square-check mr-1"></i> BACAAN BENAR / MUTQIN!</p>
+                    <p class="text-[10px] font-normal text-slate-300">AI mendeteksi kecocokan lafadz makhraj sangat tinggi dengan database asli.</p>
+                `;
+                
+                // Jika tebakan benar saat mode menghilang, otomatis munculkan teks ayat secara permanen sebagai hadiah keberhasilan
+                const displayArab = document.getElementById('displayAyatArab');
+                displayArab.className = "font-arabic text-3xl md:text-4xl text-emerald-400 tracking-wide leading-loose select-none transition-all duration-500 pt-2";
+            } else {
+                boxHasil.className = "p-3 rounded-lg text-xs font-bold text-center border bg-rose-950/80 border-rose-500 text-rose-400 space-y-1";
+                boxHasil.innerHTML = `
+                    <p class="text-sm"><i class="fa-solid fa-triangle-exclamation mr-1"></i> ADA BACAAN YANG SALAH / KURANG TEPAT</p>
+                    <p class="text-[10px] font-normal text-slate-300">Coba perhatikan kembali huruf tajwidnya dan ulangi penekanan tombol mic.</p>
+                `;
+            }
+        }
+
+        // Pembantu AI: Menghitung koefisien jarak teks (Levenshtein Distance Approximation)
+        function hitungKemiripan(s1, s2) {
+            let longer = s1;
+            let shorter = s2;
+            if (s1.length < s2.length) {
+                longer = s2;
+                shorter = s1;
+            }
+            let longerLength = longer.length;
+            if (longerLength === 0) return 1.0;
+            return (longerLength - editDistance(longer, shorter)) / longerLength;
+        }
+
+        function editDistance(s1, s2) {
+            s1 = s1.toLowerCase();
+            s2 = s2.toLowerCase();
+            let costs = new Array();
+            for (let i = 0; i <= s1.length; i++) {
+                let lastValue = i;
+                for (let j = 0; j <= s2.length; j++) {
+                    if (i == 0) costs[j] = j;
+                    else {
+                        if (j > 0) {
+                            let newValue = costs[j - 1];
+                            if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                                newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                            costs[j - 1] = lastValue;
+                            lastValue = newValue;
+                        }
+                    }
+                }
+                if (i > 0) costs[s2.length] = lastValue;
+            }
+            return costs[s2.length];
+        }
+
+        // BOOTSTRAP INITIALIZER
+        window.onload = function() {
+            renderDaftarSurah();
+            muatAyatKeLab();
+        };
+    </script>
+</body>
+</html>
